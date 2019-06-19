@@ -1,3 +1,8 @@
 # yii1-test
 
-Go to http://localhost:9170/testdrive/index.php to see an example Yii 1 application.
+To deploy example Yii application:
+```
+$ vagrant up
+```
+Then go to http://localhost:9170/testdrive/index.php to see the example Yii 1 
+application.
