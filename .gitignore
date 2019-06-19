@@ -1,0 +1,9 @@
+.vagrant
+.idea
+
+html
+assets
+yii
+testdrive
+
+*.log
