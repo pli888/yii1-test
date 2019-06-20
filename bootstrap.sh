@@ -78,15 +78,11 @@ sudo apt-get -y install phpmyadmin
 # install git
 sudo apt-get -y install git
 
-# Install Yii 1
-if [ ! -d /var/www/yii ] ; then
-    git clone https://github.com/yiisoft/yii.git /var/www/yii
-else
-    cd /var/www/yii
-    git pull https://github.com/yiisoft/yii.git
-fi
+# Install Yii 1 in /var/www/yii
+cd /var/www/yii
+git pull https://github.com/yiisoft/yii.git
 
-# Create Yii application
+# Create test Yii application
 echo "yes" | /var/www/yii/framework/yiic webapp /var/www/testdrive
 
 #mkdir /var/www/testdrive/protected/runtime
