@@ -40,3 +40,15 @@ In database.php, uncomment the following:
 'password' => 'hello',
 'charset' => 'utf8',
 ```
+
+Code to test database:
+```
+Yii::app()->db->active=true;
+$row=Yii::app()->db->createCommand('SELECT * FROM tbl_user')->query();
+
+    echo "<h1>No. rows ";
+    print_r($row->rowCount);
+    echo " No. cols ";
+    print_r($row->columnCount);
+    echo "</h1>";
+```

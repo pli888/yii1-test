@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# Use single quotes instead of double quotes to make it work with special-character passwords
+# Use single quotes instead of double quotes to make it work with
+# special-character passwords
 PASSWORD='hello'
 
 # ---------------------------------------
@@ -65,7 +66,7 @@ sudo apt-get -y install mysql-server
 sudo apt-get install php5.6-mysql
 
 
-# install phpmyadmin and give password(s) to installer
+# install phpmyadmin and give passwords) to installer
 # for simplicity I'm using the same password for mysql and phpmyadmin
 sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
 sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $PASSWORD"
