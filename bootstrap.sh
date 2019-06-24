@@ -95,3 +95,6 @@ create database testdrive;
 use testdrive;
 source /var/www/testdrive/protected/data/schema.mysql.sql;
 EOF
+
+# Execute database migrations
+echo "yes" | /var/www/testdrive/protected/yiic migrate
