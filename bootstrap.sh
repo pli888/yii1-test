@@ -84,7 +84,14 @@ cd /var/www/yii
 git pull https://github.com/yiisoft/yii.git
 
 # Create test Yii application
-echo "yes" | /var/www/yii/framework/yiic webapp /var/www/testdrive
+# echo "yes" | /var/www/yii/framework/yiic webapp /var/www/testdrive
 
 #mkdir /var/www/testdrive/protected/runtime
 #chmod a+w /var/www/testdrive/protected/runtime
+
+# Create testdrive mysql database
+mysql -u root -phello <<EOF
+create database testdrive;
+use testdrive;
+source /var/www/testdrive/protected/data/schema.mysql.sql;
+EOF

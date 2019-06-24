@@ -10,12 +10,12 @@ checker tool.
 
 Then go to http://localhost:9170/testdrive/index.php to see the example skeleton
 Yii 1 application. Contains 4 functional pages:
-* homepage
+* Home page
 * About page
 * Contact page
 * Login page
 
-/var/www/testdrive/index.php is the entry script and is the only script that
+`/var/www/testdrive/index.php` is the entry script and is the only script that
 Web users can directly access. It includes the Yii bootstrap file `yii.php` and 
 then creates an application instance with specified configuration and executes
 the application.
@@ -52,3 +52,21 @@ $row=Yii::app()->db->createCommand('SELECT * FROM tbl_user')->query();
     print_r($row->columnCount);
     echo "</h1>";
 ```
+
+To apply database migration to create director table,
+```
+$ vagrant ssh
+$ cd /vagrant/testdrive/protected
+$ ./yiic migrate
+```
+
+## Working with forms
+
+https://www.yiiframework.com/doc/guide/1.1/en/form.overview
+
+To create forms un Yii:
+
+1. Create model class representing the data fields to be collected
+2. Create controller action with code that responds to form submission
+3. Create a form in the view script file associated with controller action
+
