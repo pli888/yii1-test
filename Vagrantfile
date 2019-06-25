@@ -25,6 +25,7 @@ Vagrant.configure("2") do |config|
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # NOTE: This will enable public access to the opened port
   config.vm.network "forwarded_port", guest: 80, host: 9170
+  config.vm.network "forwarded_port", guest: 3306, host: 9171
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access
@@ -32,8 +33,8 @@ Vagrant.configure("2") do |config|
   # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
 
   # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
+  # using a specific static IP.
+  config.vm.network "private_network", ip: "192.168.33.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -44,41 +45,29 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder ".", "/vagrant"
+  config.vm.synced_folder "./", "/var/www",
+    id: "vagrant-root",
+    :group=>'www-data',
+    :mount_options=>['dmode=775,fmode=775']
+
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
-  # Example for VirtualBox:
-  #
-  # config.vm.provider "virtualbox" do |vb|
-  #   # Display the VirtualBox GUI when booting the machine
-  #   vb.gui = true
-  #
-  #   # Customize the amount of memory on the VM:
-  #   vb.memory = "1024"
-  # end
-  #
-  # View the documentation for the provider you are using for more
-  # information on available options.
+  config.vm.provider "virtualbox" do |vb|
+    # Customize the amount of memory on the VM:
+    vb.memory = "512"
+    vb.name = "Yii1"
+    vb.cpus= "2"
+  end
 
-#   FileUtils.mkpath("./protected/runtime")
-#   FileUtils.chmod_R 0777, ["./protected/runtime"]
-
-#   FileUtils.mkpath("./assets")
-#   FileUtils.chmod_R 0777, ["./assets"]
-
+  # Allow directories to be writable by www-data
   FileUtils.mkpath("./testdrive/protected/runtime")
   FileUtils.chmod_R 0777, ["./testdrive/protected/runtime"]
 
   FileUtils.mkpath("./testdrive/assets")
-  FileUtils.chmod_R 0777, ["./testdrive/assets"]
+  config.vm.synced_folder "./testdrive/assets", "/vagrant/assets",
+    :mount_options => ["dmode=777,fmode=777"]
 
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
-  # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
+  # Enable provisioning with a shell script
   config.vm.provision :shell, path: "bootstrap.sh"
 end

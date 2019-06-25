@@ -8,7 +8,7 @@ PASSWORD='hello'
 #          Virtual Machine Setup
 # ---------------------------------------
 
-# Adding multiverse sources.
+# Add multiverse sources
 cat > /etc/apt/sources.list.d/multiverse.list << EOF
 deb http://archive.ubuntu.com/ubuntu bionic multiverse
 deb http://archive.ubuntu.com/ubuntu bionic-updates multiverse
@@ -24,10 +24,6 @@ apt-get update
 
 # Installing Packages
 apt-get install -y apache2
-
-# linking Vagrant directory to Apache 2.4 public directory
-rm -rf /var/www
-ln -fs /vagrant /var/www
 
 # Add ServerName to httpd.conf
 echo "ServerName localhost" > /etc/apache2/httpd.conf
@@ -52,22 +48,25 @@ service apache2 reload
 #          PHP Setup
 # ---------------------------------------
 
-# add  Ondrej PHP repository
+# dd  Ondrej PHP repository
 add-apt-repository ppa:ondrej/php
-#  update your system’s repository index
+#  Update system repository index
 apt-get update
-#  install PHP 5.6
+#  Install PHP 5.6
 apt-get install -y php5.6
 
-# install mysql and give password to installer
+# ---------------------------------------
+#          MySQL Setup
+# ---------------------------------------
+
+# Install mysql and give password to installer
 sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $PASSWORD"
 sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $PASSWORD"
-sudo apt-get -y install mysql-server
+sudo apt-get -y install mysql-server mysql-client
 sudo apt-get install php5.6-mysql
 
-
-# install phpmyadmin and give passwords) to installer
-# for simplicity I'm using the same password for mysql and phpmyadmin
+# Install phpmyadmin and give passwords to installer
+# For simplicity I'm using the same password for mysql and phpmyadmin
 sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
 sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $PASSWORD"
 sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $PASSWORD"
@@ -75,6 +74,15 @@ sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $
 sudo debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
 sudo apt-get -y install phpmyadmin
 
+# Allow external connections on MySQL service
+sudo sed -i -e 's/bind-addres/#bind-address/g' /etc/mysql/mysql.conf.d/mysqld.cnf
+sudo sed -i -e 's/skip-external-locking/#skip-external-locking/g' /etc/mysql/mysql.conf.d/mysqld.cnf
+mysql -u root -p$PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$PASSWORD'; FLUSH privileges;"
+sudo service mysql restart
+
+# ---------------------------------------
+#          Yii 1 and test application setup
+# ---------------------------------------
 
 # install git
 sudo apt-get -y install git
@@ -83,14 +91,8 @@ sudo apt-get -y install git
 cd /var/www/yii
 git pull https://github.com/yiisoft/yii.git
 
-# Create test Yii application
-# echo "yes" | /var/www/yii/framework/yiic webapp /var/www/testdrive
-
-#mkdir /var/www/testdrive/protected/runtime
-#chmod a+w /var/www/testdrive/protected/runtime
-
 # Create testdrive mysql database
-mysql -u root -phello <<EOF
+mysql -u root -p$PASSWORD <<EOF
 create database testdrive;
 use testdrive;
 source /var/www/testdrive/protected/data/schema.mysql.sql;
