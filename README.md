@@ -61,19 +61,53 @@ generated under `testdrive/protected/models`. This `User` model class allows us
 to talk to the underlying database `tbl_user` table in an object-oriented 
 fashion.
 
-These model classes represent in the information and business rules about 
-entities associated with applications.
+These model classes represent the data and business rules about entities 
+associated with applications. A model represents a single data object such as a
+row in a database table or an HTML form. Each field of the data object 
+represents an attribute of the model.
+
+There are Form models used to store user input and active records that represent
+a row from a database table.
 
 >Describe what the User.php class is and does in terms of ActiveRecord
 
 ### Generating CRUD code
 
 Clicking on the CRUD Generator link will generate code to implement the database 
-CRUD operations. These are mostly view classes which display information about
+CRUD operations.
+
+A `*Controller` class is also generated. When a controller runs, it performs
+the requested action by bringing in the needed models and renders a view. The
+Controller class contains functions whose names starts with `action`, e.g. CRUD 
+operations like actionCreate(), actionUpdate() and actionDelete() functions. The
+default function in a Controller is `actionIndex()`.
+```
+class SiteController extends CController
+{
+    public function actionIndex()
+    {
+        // ...
+    }
+ 
+    public function actionContact()
+    {
+        // ...
+    }
+}
+```
+
+The CRUD code are mostly view classes which display information about
 entities such as Users and provides access to operations for their creation, 
-update and deletion. A `*Controller` class is also generated for performing the
-actual CRUD operations with actionCreate(), actionUpdate() and actionDelete()
-functions.
+update and deletion. Controller classes render views by calling the `render()`
+function. The view script can access the controller instance using `$this` and
+can pull in any property of the controller by evaluating `$this->propertyName` 
+in the view.
+
+#### Routes
+
+Controllers and their actions are identified by IDs, e.g. `post/edit` refers to
+the `actionEdit` function in the `PostController` class. Routes are 
+case-sensitive.
 
 ### Accessing CRUD Pages
 
@@ -82,13 +116,9 @@ http://localhost:9170/testdrive/index.php/user/index which displays user entries
 in a HTML table. On the user list page, there are links to operations for 
 creating and managing users.
 
-## Working with forms
+## Testing
 
-https://www.yiiframework.com/doc/guide/1.1/en/form.overview
+https://www.yiiframework.com/doc/guide/1.1/en/test.overview
 
-To create forms un Yii:
 
-1. Create model class representing the data fields to be collected
-2. Create controller action with code that responds to form submission
-3. Create a form in the view script file associated with controller action
 
